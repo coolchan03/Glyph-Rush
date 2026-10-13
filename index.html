@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Glyph Rush is an adaptive speed reader with RSVP, smart phrase chunking, persistent progress, and comprehension-aware pacing.">
+  <title>Glyph Rush — Read at the speed you understand</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Glyph Rush home">
+      <img src="./assets/logo.svg" alt="" width="42" height="42">
+      <span><strong>Glyph Rush</strong><small>Read at the speed you understand.</small></span>
+    </a>
+    <nav class="tabs" aria-label="Main sections">
+      <button class="tab" data-tab="library">Library</button>
+      <button class="tab active" data-tab="reader">Reader</button>
+      <button class="tab" data-tab="stats">Stats</button>
+    </nav>
+  </header>
+  <main>
+    <section id="panel-library" class="panel hidden">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">YOUR READING LIBRARY</p>
+          <h1>Pick up exactly where you stopped.</h1>
+          <p>Books and progress stay in this browser. Nothing you import is uploaded to GitHub.</p>
+        </div>
+        <div class="hero-actions">
+          <label class="button primary">Import document<input id="file-input" class="sr-only" type="file" accept=".txt,.md,.markdown,.html,.htm,.pdf,.epub,.docx,text/plain,text/html,application/pdf,application/epub+zip,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></label>
+          <button id="export-library" class="button">Export backup</button>
+          <label class="button">Restore backup<input id="import-library" class="sr-only" type="file" accept=".json,application/json"></label>
+        </div>
+      </div>
+      <div class="quick-paste card">
+        <div><h2>Quick paste</h2><p>Paste anything and start reading immediately.</p></div>
+        <input id="paste-title" type="text" placeholder="Title (optional)" aria-label="Pasted document title">
+        <textarea id="paste-text" rows="5" placeholder="Paste text here…"></textarea>
+        <button id="add-paste" class="button primary">Add & read</button>
+      </div>
+      <div class="section-heading"><div><h2>Documents</h2><p id="library-status">Loading your library…</p></div></div>
+      <div id="library-grid" class="library-grid"></div>
+    </section>
+    <section id="panel-reader" class="panel">
+      <div class="reader-toolbar card">
+        <div class="doc-heading"><span class="eyebrow">NOW READING</span><h1 id="doc-title">Getting started</h1><p id="doc-meta">Sample document</p></div>
+        <div class="toolbar-actions"><button id="favorite" class="icon-button" title="Favorite">☆</button><button id="focus-mode" class="button">Focus</button></div>
+      </div>
+      <div class="reader-layout">
+        <div class="reader-main">
+          <div class="reader-tools card">
+            <div class="field grow"><label for="search-doc">Search</label><div class="search-row"><input id="search-doc" type="search" placeholder="Find a word or phrase…"><button id="search-next" class="button">Next</button></div><small id="search-status"></small></div>
+            <div class="field"><label for="chapter-select">Chapter</label><select id="chapter-select"><option>No headings detected</option></select></div>
+            <div class="field"><label for="display-mode">Display</label><select id="display-mode"><option value="phrase">Smart phrase</option><option value="word">One word</option><option value="line">Line chunk</option><option value="traditional">Traditional</option></select></div>
+          </div>
+          <section id="reading-stage" class="reading-stage" tabindex="0" aria-label="Reading area">
+            <div class="stage-top"><span id="goal-badge">LEARN</span><span id="state-label">Ready</span><span>•</span><span id="position-label">0%</span></div>
+            <div id="reader-display" class="reader-display" aria-live="polite">Ready</div>
+            <p id="reader-context" class="reader-context">Press Space or Start when you're ready.</p>
+            <div id="context-peek" class="context-peek hidden"><span>CONTEXT</span><p id="context-text"></p></div>
+            <button id="exit-focus" class="button hidden">Exit focus mode</button>
+          </section>
+          <div class="progress-wrap"><div class="progress-track"><div id="progress-bar"></div></div><div class="progress-meta"><span id="word-count">0 / 0 words</span><span id="time-left">Remaining: —</span></div></div>
+          <div class="reader-controls">
+            <button id="rewind-10" class="button">↶ 10 sec</button><button id="previous-sentence" class="button">↶ Sentence</button>
+            <button id="play-pause" class="button primary large">▶ Start</button>
+            <button id="replay-sentence" class="button">Replay sentence</button><button id="add-bookmark" class="button">🔖 Bookmark</button><button id="save-passage" class="button">＋ Save sentence</button>
+          </div>
+        </div>
+        <aside class="settings card">
+          <div><span class="eyebrow">READING GOAL</span><div class="segmented"><button class="goal active" data-goal="learn">Learn</button><button class="goal" data-goal="read">Read</button><button class="goal" data-goal="skim">Skim</button></div><p id="goal-description">Prioritizes retention and recall.</p></div>
+          <div class="field"><label for="wpm">Speed <strong><span id="wpm-label">250</span> WPM</strong></label><input id="wpm" type="range" min="100" max="1200" step="25" value="250"></div>
+          <div class="field"><label for="font-select">Font</label><select id="font-select"><option value="fast">Fast Sans</option><option value="system">System sans</option><option value="serif">Serif</option><option value="mono">Monospace</option></select></div>
+          <div class="field"><label for="theme-select">Theme</label><select id="theme-select"><option value="night">Night</option><option value="light">Light</option><option value="sepia">Sepia</option><option value="contrast">High contrast</option></select></div>
+          <label class="switch"><input id="fast-fix" type="checkbox" checked><span>Fast-Font fixation</span></label>
+          <label class="switch"><input id="smart-pauses" type="checkbox" checked><span>Smart slowdowns</span></label>
+          <label class="switch"><input id="speed-ramp" type="checkbox"><span>Ramp +25 WPM/min</span></label>
+          <label class="switch"><input id="recall-checks" type="checkbox" checked><span>Recall checks</span></label>
+          <label class="switch"><input id="auto-pause" type="checkbox" checked><span>Pause when tab hidden</span></label>
+          <div class="goal-box"><label for="goal-minutes">Finish remaining text in</label><div><input id="goal-minutes" type="number" min="1" max="600" value="20"><span>minutes</span></div><p id="goal-result"></p><button id="use-goal-speed" class="button">Use required speed</button></div>
+        </aside>
+      </div>
+      <div class="reader-extras">
+        <section class="card"><div class="section-heading compact"><h2>Bookmarks</h2><span id="bookmark-count">0</span></div><div id="bookmark-list" class="saved-list empty">No bookmarks yet.</div></section>
+        <section class="card"><div class="section-heading compact"><h2>Saved passages</h2><span id="passage-count">0</span></div><div id="passage-list" class="saved-list empty">No passages yet.</div></section>
+      </div>
+      <p class="shortcut-help"><kbd>Space</kbd> play/pause · hold <kbd>Space</kbd> context · <kbd>↑</kbd>/<kbd>↓</kbd> speed · hold <kbd>Shift</kbd> slow down · <kbd>R</kbd> rewind · <kbd>S</kbd> replay · <kbd>B</kbd> bookmark</p>
+    </section>
+    <section id="panel-stats" class="panel hidden">
+      <div class="hero"><div><p class="eyebrow">READING PROFILE</p><h1>Measure useful speed, not flashy speed.</h1><p>Glyph Rush separates raw pace from comprehension-adjusted pace.</p></div></div>
+      <div class="stat-grid"><article class="stat card"><span>Words read</span><strong id="stat-words">0</strong></article><article class="stat card"><span>Actual average</span><strong id="stat-wpm">—</strong></article><article class="stat card"><span>Recall score</span><strong id="stat-recall">—</strong></article><article class="stat card"><span>Adjusted speed</span><strong id="stat-adjusted">—</strong></article></div>
+      <div class="stats-detail"><section class="card"><h2>This session</h2><div id="session-details"></div></section><section class="card"><h2>Your profile</h2><div id="profile-details"></div></section></div>
+    </section>
+  </main>
+  <section id="recall-card" class="recall-card card hidden" aria-live="polite">
+    <span class="eyebrow">QUICK RECALL CHECK</span>
+    <h2 id="recall-question">Which phrase appeared in the section you just read?</h2>
+    <div id="recall-answers" class="recall-answers"></div>
+    <p id="recall-feedback"></p>
+    <button id="continue-reading" class="button primary hidden">Continue</button>
+  </section>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

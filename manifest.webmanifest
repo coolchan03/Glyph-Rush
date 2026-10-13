@@ -1,0 +1,15 @@
+{
+  "name": "Glyph Rush",
+  "short_name": "Glyph Rush",
+  "description": "Adaptive speed reading with RSVP, smart phrases, saved progress, and comprehension-aware pacing.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#0b1020",
+  "orientation": "any",
+  "icons": [
+    {"src":"./assets/logo.svg","sizes":"any","type":"image/svg+xml","purpose":"any"},
+    {"src":"./assets/icon-maskable.svg","sizes":"any","type":"image/svg+xml","purpose":"maskable"}
+  ]
+}
